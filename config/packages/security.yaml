@@ -1,0 +1,114 @@
+# services:
+#     Symfony\Bridge\Doctrine\Security\User\UserLoaderInterface: '@App\Auth\Repository\PasswordAuthenticatedSubjectEntityRepository'
+
+security:
+    # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
+    password_hashers:
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+
+    access_decision_manager:
+        strategy: unanimous
+
+    # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
+    providers:
+        # jwt:
+        #     lexik_jwt: ~
+
+        password_authenticated_user_provider:
+            entity:
+                class: App\Auth\Entity\User
+                property: username
+        # all_users_provider:
+        #     chain:
+        #         providers: ['principal_user_provider', 'password_authenticated_user_provider']
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js|frontend)/
+            security: false
+
+        auth_login:
+            pattern: ^/auth/login
+            provider: password_authenticated_user_provider
+            lazy: true
+            stateless: false
+            json_login:
+                check_path: /auth/login
+                # success_handler: lexik_jwt_authentication.handler.authentication_success
+                # failure_handler: lexik_jwt_authentication.handler.authentication_failure
+
+        # auth_token:
+        #     pattern: ^/auth/token/refresh
+        #     provider: jwt
+        #     lazy: true
+        #     stateless: true
+        #     refresh_jwt:
+        #         check_path: /auth/token/refresh
+
+        # auth:
+        #     pattern: ^/auth/
+        #     provider: password_authenticated_user_provider
+        #     lazy: true
+        #     stateless: true
+        #     entry_point: jwt
+        #     json_login:
+        #         check_path: /auth/login
+        #         success_handler: lexik_jwt_authentication.handler.authentication_success
+        #         failure_handler: lexik_jwt_authentication.handler.authentication_failure
+        #     jwt: ~
+        #     refresh_jwt:
+        #         check_path: /auth/token/refresh
+
+        # api:
+        #     provider: jwt
+        #     jwt: ~
+        #     stateless: true
+        #     logout:
+        #         path: auth_token_invalidate
+
+        # password_authenticated:
+        #     lazy: true
+        #     provider: password_authenticated_user_provider
+        #     stateless: true
+
+        #     json_login:
+        #         check_path: 'auth_login'
+
+        # main:
+        #     # access_token:
+        #     #     token_handler: App\Security\AccessTokenHandler
+        #     lazy: true
+        #     #provider: all_users_provider
+        #     provider: password_authenticated_user_provider
+        #     stateless: true
+
+            # activate different ways to authenticate
+            # https://symfony.com/doc/current/security.html#the-firewall
+
+            # https://symfony.com/doc/current/security/impersonating_user.html
+            # switch_user: true
+
+
+    # Easy way to control access for large sections of your site
+    # Note: Only the *first* access control that matches will be used
+    access_control:
+        # - { path: ^/admin, roles: ROLE_ADMIN }
+        # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/auth/(login|token/refresh),    roles: PUBLIC_ACCESS }
+        - { path: ^/api/(re)?doc((\.json$)|s)?$,   roles: PUBLIC_ACCESS }
+        - { path: ^/frontend/,                     roles: PUBLIC_ACCESS }
+        #- { path: ^/api,                           roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/,                              roles: PUBLIC_ACCESS }
+
+when@test:
+    security:
+        password_hashers:
+            # By default, password hashers are resource intensive and take time. This is
+            # important to generate secure password hashes. In tests however, secure hashes
+            # are not important, waste resources and increase test times. The following
+            # reduces the work factor to the lowest possible values.
+            Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
+                algorithm: auto
+                cost: 4 # Lowest possible value for bcrypt
+                time_cost: 3 # Lowest possible value for argon
+                memory_cost: 10 # Lowest possible value for argon

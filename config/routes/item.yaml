@@ -1,0 +1,4 @@
+item_controller_post:
+  path: /api/item
+  controller: App\Items\Infrastructure\Controllers\ItemPostController
+  methods:  [POST]

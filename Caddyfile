@@ -1,0 +1,67 @@
+{
+	auto_https off
+
+	# Enable FrankenPHP
+	frankenphp
+	
+	# Configure when the directive must be executed
+	order php_server before file_server
+
+	admin off
+	persist_config off
+	grace_period 60s
+	shutdown_delay 30s
+
+	log default {
+		output stderr
+		format console
+		level INFO
+	}
+
+	servers :80 {
+		protocols h1 h2c
+		client_ip_headers X-Forwarded-For
+		metrics
+	}
+}
+
+:80 {
+	handle /alive {
+		@goingDown vars {http.shutting_down} true
+		respond @goingDown "Shutting down in {http.time_until_shutdown}" 503
+		respond 200
+	}
+
+	log {
+		format filter {
+			wrap console
+		}
+	}
+
+	# Enable compression (optional)
+	encode zstd br gzip
+
+	handle {
+		root * /app/public/
+
+		# Execute PHP files in the current directory and serve assets
+		php_server {
+			resolve_root_symlink
+			capture_stderr
+			env APP_SCHEME http
+			env APP_HOST {http.request.host}
+			env APP_URL http://{http.request.host}
+			env MIX_HMR_HOST {http.request.host}
+			env MIX_PUSHER_HOST {http.request.host}
+			env HTTPS off
+			env SERVER_PORT 80
+			env REQUEST_SCHEME http
+			env REMOTE_ADDR {client_ip}
+			env REMOTE_HOST {client_ip}
+		}
+
+		file_server {
+			root /app/public/
+		}
+	}
+}

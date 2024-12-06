@@ -1,0 +1,15 @@
+# Expose your documentation as JSON swagger compliant
+app.swagger:
+    path: /api/doc.json
+    methods: GET
+    defaults: { _controller: nelmio_api_doc.controller.swagger }
+
+app.redocly:
+    path: /api/redoc
+    methods: GET
+    defaults: { _controller: nelmio_api_doc.controller.redocly }
+
+app.swagger_ui:
+    path: /api/docs
+    methods: GET
+    defaults: { _controller: nelmio_api_doc.controller.swagger_ui }

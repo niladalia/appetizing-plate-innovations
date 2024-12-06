@@ -1,0 +1,127 @@
+parameters:
+    logging.console.level: '%env(resolve:LOGGING_CONSOLE_LEVEL)%'
+    logging.logger.level: '%env(resolve:LOGGING_LOGGER_LEVEL)%'
+    logging.file.level: '%env(resolve:LOGGING_FILE_LEVEL)%'
+
+services:
+    monolog.formatter.console:
+        class: Symfony\Bridge\Monolog\Formatter\ConsoleFormatter
+        arguments:
+            $options:
+                multiline: true
+
+    app.logger:
+        alias: Psr\Log\LoggerInterface
+        public: true
+
+monolog:
+    channels:
+        - deprecation # Deprecations are logged in the dedicated "deprecation" channel when it exists
+
+when@dev:
+    monolog:
+        handlers:
+            test:
+                type: test
+                process_psr_3_messages: false
+                channels: [ "!event", "!doctrine" ]
+            console:
+                type: console
+                process_psr_3_messages: true
+                level: '%logging.console.level%'
+                channels: ["!event", "!doctrine"]
+                # optionally configure the mapping between verbosity levels and log levels
+                verbosity_levels:
+                    VERBOSITY_NORMAL: NOTICE
+            logs:
+                type: stream
+                path: php://stdout
+                level: '%logging.logger.level%'
+                formatter: monolog.formatter.console
+                process_psr_3_messages: true
+                channels: ["!event", "!deprecation", "!doctrine"]
+                include_stacktraces: true
+                verbosity_levels:
+                    VERBOSITY_NORMAL: DEBUG
+            main:
+                type:  rotating_file
+                path: "%kernel.logs_dir%/%kernel.environment%.log"
+                level: '%logging.file.level%'
+                process_psr_3_messages: true
+                channels: ["!event"]
+                include_stacktraces: false
+                verbosity_levels:
+                    VERBOSITY_NORMAL: DEBUG
+            # uncomment to get logging in your browser
+            # you may have to allow bigger header sizes in your Web server configuration
+            #firephp:
+            #    type: firephp
+            #    level: info
+            chromephp:
+               type: chromephp
+               level: info
+
+when@test:
+    monolog:
+        handlers:
+            test:
+                type: test
+                process_psr_3_messages: false
+                channels: [ "!event", "!doctrine" ]
+            main:
+                type: fingers_crossed
+                action_level: error
+                handler: nested
+                excluded_http_codes: [404, 405]
+                channels: ["!event"]
+            nested:
+                type: stream
+                path: "%kernel.logs_dir%/%kernel.environment%.log"
+                level: debug
+
+when@prod:
+    monolog:
+        handlers:
+            # Log most messages higher than DEBUG level
+            # Exclude deprecations, database, events and HTTP client
+            main:
+                type: stream
+                path: php://stderr
+                level: debug
+                formatter: monolog.formatter.json
+                process_psr_3_messages: true
+                channels: ["!deprecation", "!doctrine", "!event"]
+                include_stacktraces: false
+                verbosity_levels:
+                    VERBOSITY_NORMAL: DEBUG
+
+            # # Log doctrine messages higher than WARNING level
+            # # We want to know if there is any problem with database or queries
+            doctrine-warnings:
+                type: stream
+                path: php://stderr
+                level: warning
+                formatter: monolog.formatter.json
+                process_psr_3_messages: true
+                channels: ["doctrine"]
+                include_stacktraces: false
+                verbosity_levels:
+                    VERBOSITY_NORMAL: WARNING
+
+            rotating_file_filter:
+                type: filter
+                handler: rotating_file
+                accepted_levels: [debug]
+
+            # # Log HTTP client traffic details to local file
+            # # Do not use PSR3 here
+            rotating_file:
+                type: rotating_file
+                path: "%kernel.logs_dir%/%kernel.environment%.log"
+                level: debug
+                bubble: false
+                channels: ["http_client"]
+                include_stacktraces: false
+                # max number of log files to keep
+                # defaults to zero, which means infinite files
+                max_files: 5

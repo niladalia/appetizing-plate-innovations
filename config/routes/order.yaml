@@ -1,0 +1,20 @@
+order_controller_post:
+  path: /api/order
+  controller: App\Orders\Infrastructure\Controllers\OrderPostController
+  methods:  [POST]
+
+add_item_controller_post:
+  path: /api/order/{id}/item
+  controller: App\Orders\Infrastructure\Controllers\OrderItemPostController
+  methods:  [POST]
+
+get_order_controller_post:
+  path: /api/order/{id}
+  controller: App\Orders\Infrastructure\Controllers\OrderGetController
+  methods:  [GET]
+
+update_order_status_controller_patch:
+  path: /api/order/{id}/status
+  controller: App\Orders\Infrastructure\Controllers\OrderChangeStatusController
+  methods: [PATCH]
+

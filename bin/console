@@ -1,0 +1,22 @@
+#!/usr/bin/env php
+<?php
+
+use App\Kernel;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+
+if (!defined('COMPOSER_VENDOR_DIR')) {
+    define('COMPOSER_VENDOR_DIR', getenv('COMPOSER_VENDOR_DIR') ? getenv('COMPOSER_VENDOR_DIR') : dirname(dirname(__DIR__)).'/vendor');
+}
+
+if (!is_file(COMPOSER_VENDOR_DIR.'/autoload_runtime.php')) {
+    throw new LogicException('Symfony Runtime is missing. Try running "composer require symfony/runtime".');
+}
+
+require_once COMPOSER_VENDOR_DIR.'/autoload_runtime.php';
+
+return function (array $context) {
+    global $kernel;
+    $kernel = new Kernel($context['APP_ENV'], (bool) $context['APP_DEBUG']);
+
+    return new Application($kernel);
+};

@@ -1,0 +1,27 @@
+#!/usr/bin/env php
+<?php
+
+if (!ini_get('date.timezone')) {
+    ini_set('date.timezone', 'UTC');
+}
+
+if (!defined('COMPOSER_VENDOR_DIR')) {
+    define('COMPOSER_VENDOR_DIR', getenv('COMPOSER_VENDOR_DIR') ? getenv('COMPOSER_VENDOR_DIR') : dirname(dirname(__DIR__)).'/vendor');
+}
+
+if (is_file(COMPOSER_VENDOR_DIR . '/phpunit/phpunit/phpunit')) {
+    if (PHP_VERSION_ID >= 80000) {
+        require COMPOSER_VENDOR_DIR . '/phpunit/phpunit/phpunit';
+    } else {
+        define('PHPUNIT_COMPOSER_INSTALL', COMPOSER_VENDOR_DIR . '/autoload.php');
+        require PHPUNIT_COMPOSER_INSTALL;
+        PHPUnit\TextUI\Command::main();
+    }
+} else {
+    if (!is_file(COMPOSER_VENDOR_DIR . '/symfony/phpunit-bridge/bin/simple-phpunit.php')) {
+        echo "Unable to find the `simple-phpunit.php` script in `" . COMPOSER_VENDOR_DIR . "/symfony/phpunit-bridge/bin/`.\n";
+        exit(1);
+    }
+
+    require COMPOSER_VENDOR_DIR . '/symfony/phpunit-bridge/bin/simple-phpunit.php';
+}

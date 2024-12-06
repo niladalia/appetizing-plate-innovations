@@ -1,0 +1,38 @@
+# see https://symfony.com/doc/current/reference/configuration/framework.html
+framework:
+    secret: '%env(resolve:APP_SECRET)%'
+    #csrf_protection: true
+
+    # Note that the session will be started ONLY if you read or write from it.
+    session: false
+
+    #esi: true
+    #fragments: true
+
+    php_errors:
+      log: true
+
+    serializer:
+      enable_attributes: true
+      enabled: true
+      name_converter: 'serializer.name_converter.camel_case_to_snake_case'
+      default_context:
+        enable_max_depth: true
+
+    # see https://symfony.com/doc/current/http_client.html
+    http_client:
+#      default_options:
+#        verify_host: false
+#        verify_peer: false
+      # scoped_clients:
+      #   default:
+      #     scope: '.*'
+      #     headers:
+      #       X-Parent-Trace-ID: '@=service("App\\Logging\\Interface\\TraceIdManagerInterface").getCurrentTraceId()'
+      #       X-Log: '1'
+
+when@test:
+    framework:
+        test: true
+        session:
+            storage_factory_id: session.storage.factory.mock_file

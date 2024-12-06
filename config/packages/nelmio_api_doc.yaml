@@ -1,0 +1,89 @@
+nelmio_api_doc:
+    models: { use_jms: false }
+
+    documentation:
+        info:
+            title: API Template
+            description: This is a simple API template.
+            version: 1.0.0
+        paths:
+          /api/item:
+            post:
+              tags:
+                - "Item"
+              summary: "Create a new item"
+              description: "Creates a new item and returns the item ID."
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          example: "Item Name"
+                        description:
+                          type: string
+                          example: "Item Description"
+                        price:
+                          type: number
+                          format: float
+                          example: 19.99
+          /api/order:
+            post:
+              tags:
+                - "Order"
+              summary: "Create a new order"
+              description: "Creates a new order and returns the order ID."
+              requestBody:
+                required: false
+          /api/order/{id}/item:
+            post:
+              tags:
+                - "Order"
+              summary: "Add an item to order "
+              description: "Adds an existing item to an order."
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        quantity:
+                          type: number
+                          example: 4
+                        item_id:
+                          type: string
+                          example: "Paste a valid ItemID"
+          /api/order/{id}:
+            get:
+              tags:
+                - "Order"
+              summary: "Retrieve the status and total price info from an offer."
+              description: "Retrieve the status and total price info from an offer."
+          /api/order/{id}/status:
+            patch:
+              tags:
+                - "Order"
+              summary: "Change the status of an order"
+              description: "Change the status of an order"
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                          example: "in_preparation"
+
+    areas: # to filter documented areas
+        default:
+            path_patterns:
+                - ^/api(?!/(re)?doc((\.json)|s)?$) # Accepts routes under /api except /api/doc
+                - ^/auth/
+                - ^/frontend/
+                - ^/api/item

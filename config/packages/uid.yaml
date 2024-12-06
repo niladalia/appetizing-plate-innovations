@@ -1,0 +1,6 @@
+framework:
+    uid:
+        # UUIDv4 is fully random, so it's more recommended if we want the most unique ids possible
+        default_uuid_version: 4
+        # UUIDv7 is time based and sortable, so it's good if we want to use the ids to sort the records by date
+        time_based_uuid_version: 7

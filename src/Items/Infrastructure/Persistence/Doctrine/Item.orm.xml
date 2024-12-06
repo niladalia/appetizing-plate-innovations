@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity repository-class="App\Items\Infrastructure\ItemRepository" name="App\Items\Domain\Item" table="items">
+
+        <embedded name="id" class="App\Items\Domain\ValueObject\ItemId" use-column-prefix="false"/>
+
+        <embedded name="name" class="App\Items\Domain\ValueObject\ItemName" use-column-prefix="false"/>
+
+        <embedded name="price" class="App\Items\Domain\ValueObject\ItemPrice" use-column-prefix="false"/>
+        <embedded name="description" class="App\Items\Domain\ValueObject\ItemDescription" use-column-prefix="false"/>
+
+        <one-to-many field="orders" target-entity="App\Orders\Domain\OrderItem" mapped-by="item" fetch="LAZY"/>
+
+    </entity>
+</doctrine-mapping>

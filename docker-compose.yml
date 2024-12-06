@@ -1,0 +1,71 @@
+version: "3.5"
+
+services:
+  redis:
+    image: redis:7-alpine
+    stop_grace_period: 1s
+    restart: "no"
+    command: redis-server --save 120 1000
+    volumes:
+      - ./var/redis-data:/data:rw
+    user: "${UID}:${GID}"
+    ports:
+      - 6379:6379
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 1s
+      retries: 50
+      start_period: 1s
+
+  mysql:
+    image: mysql:8.3.0
+    restart: "no"
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+    volumes:
+      - ./var/mysql-data:/var/lib/mysql:rw
+    ports:
+      - 3306:3306/tcp
+    user: "${UID}:${GID}"
+    healthcheck:
+      test: ["CMD", 'mysqladmin', 'ping', '-h', 'localhost', '-u', 'root', '-p$$MYSQL_ROOT_PASSWORD']
+      interval: 1s
+      timeout: 1s
+      retries: 50
+      start_period: 2s
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+      args:
+        UID: "${UID}"
+    stop_grace_period: 1s
+    restart: "no"
+    env_file:
+      - ./.env.dev
+    working_dir: /app
+    volumes:
+      - .:/app
+    ports:
+      - 80:80
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      redis:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+    user: "${UID}:${GID}"
+    environment:
+      #APP_ENV: "prod"
+      CADDY_GLOBAL_OPTIONS: "debug"
+      #HOME: "/app/.home"
+    healthcheck:
+      test: ["CMD", "/bin/true"]
+      interval: 1s
+      timeout: 1s
+      retries: 50
+      start_period: 0s
