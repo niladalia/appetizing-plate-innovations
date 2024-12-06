@@ -10,7 +10,7 @@
 1. Clone this project into a machine with
    Docker installed
 
-       https://github.com/niladalia/appetizing-plate-innovations
+       git clone https://github.com/niladalia/appetizing-plate-innovations
 
 2. Move to the project folder:
 
