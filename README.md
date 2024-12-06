@@ -23,4 +23,12 @@
         make init up
 
 
-3. Now you can access the API documentation http://localhost/api/docs
+2. Now you can access the API documentation http://localhost/api/docs
+
+### Play with it
+
+1. Start by creating an Item /api/item POST
+2. Now create an Order /api/order POST
+3. At this point you can add an Item to an Order, while also specifying the quantity and the item ID in the body /api/order/{orderId}/item POST
+4. Check the status of the order as well as the totalPrice of the Order in /api/order/{id} GET. The total price is the sum of the quantity for all items related to the order
+5. You can change the status of the order using the /api/order/{id}/status PATCH. Note that the status transitions must adhere to specific rules and flow constraints!
