@@ -33,9 +33,9 @@ guard-%:
 help: ## Print this help.
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-25s\033[0m %s\n", $$1, $$2}'
 
-# check env file and create from .env.dev.example if not in place
+# check env file and create from .env.dev if not in place
 check-env:
-	if [ ! -e .env.dev ]; then cp .env.dev.example .env.dev; echo ".env.dev file not found, created from example! Please check and configure values..."; fi
+	if [ ! -e .env.dev ]; then cp .env.dev .env.dev; echo ".env.dev file not found, created from example! Please check and configure values..."; fi
 
 # check if environment is running
 check-running: check-env

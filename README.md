@@ -11,7 +11,9 @@
    Docker installed
 
        git clone https://github.com/niladalia/appetizing-plate-innovations
+2. Copy the .env to .env.dev
 
+       cp .env .env.dev
 2. Move to the project folder:
 
         cd appetizing-plate-innovations

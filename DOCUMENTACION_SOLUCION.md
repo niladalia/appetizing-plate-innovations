@@ -8,7 +8,7 @@ Finalmente, decidí centrarme en una funcionalidad más compleja, implementando 
 
 Es cierto que, con este enfoque, limité la amplitud de la API y no tuve oportunidad de demostrar conocimientos en PHPUnit o en frontend. Sin embargo, tampoco habría tenido tiempo suficiente para desarrollar una suite de tests lo suficientemente sólida como para compensar el no haber completado la API..
 
-### TODO ( si hubiera tenido más tiempo )
+### Si hubiera tenido más tiempo...
 - Reorganizar la estructura de /src en src/frontend y src/api.
 El directorio src/api contendría lo que actualmente se encuentra en /src, mientras que src/frontend alojaría las plantillas y los controladores necesarios para renderizar las distintas páginas.
 
