@@ -23,3 +23,4 @@ El directorio src/api contendría lo que actualmente se encuentra en /src, mient
 - Implementar autenticación de usuarios (camareros, administradores, etc.) mediante JWT. Esto garantizaría que, al añadir un Item o un Order, solo se devuelvan los objetos relacionados con ese usuario.
 Para evitar incluir el ID del camarero en cada solicitud, se implementaría un middleware encargado de obtener el ID del camarero a partir del JWT y de inyectarlo en el controlador correspondiente.
 
+- Tampoco tuve tiempo de revisar el Docker ni GitHub Actions.
