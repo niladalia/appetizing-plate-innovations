@@ -12,8 +12,11 @@ enum OrderStatus: string
 
     public static function fromString(string $value): self
     {
+        self::validate($value);
+
         return self::from($value);
     }
+
 
     public function getValue(): string
     {
@@ -30,6 +33,16 @@ enum OrderStatus: string
         }
     }
 
+    private static function validate(string $value): void
+    {
+        foreach (self::cases() as $status) {
+            if ($status->value === $value) {
+                return; // If valid, just return
+            }
+        }
+
+        throw new InvalidArgument(sprintf('Invalid order status: "%s".', $value));
+    }
     private function canChangeTo(OrderStatus $newStatus): bool
     {
         return match ($this) {
