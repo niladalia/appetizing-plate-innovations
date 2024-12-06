@@ -5,8 +5,12 @@ Al contar con solo 3 horas para realizar el ejercicio, tenía varias opciones.
 Mi idea inicial era desarrollar una aplicación completa que abarcara todos los aspectos (interfaz web, pruebas y API), aunque con una usabilidad mínima (1 o 2 endpoints).
 
 Finalmente, decidí centrarme en una funcionalidad más compleja, implementando todos los endpoints requeridos (excepto el Delete, debido a la falta de tiempo y su baja complejidad). Esto me permitió ofrecer una visión más completa de mis conocimientos, al incluir casos de uso más avanzados, como la interacción entre Order e Items o la implementación de una "state machine".
-
 Es cierto que, con este enfoque, limité la amplitud de la API y no tuve oportunidad de demostrar conocimientos en PHPUnit o en frontend. Sin embargo, tampoco habría tenido tiempo suficiente para desarrollar una suite de tests lo suficientemente sólida como para compensar el no haber completado la API..
+
+He seguido la arquitectura Hexagonal, específicamente con DDD, empujando toda la lógica de dominio hacia la capa del Dominio. 
+La estructura está organizada en tres capas distintas: Infraestructura, Aplicación y Dominio. En la capa de Infraestructura he colocado todas las dependencias externas y puntos de entrada; en la capa de Aplicación se encuentran los casos de uso; y en la capa de Dominio están los atributos, las entidades y la lógica del dominio.
+
+
 
 ### Si hubiera tenido más tiempo...
 - Reorganizar la estructura de /src en src/frontend y src/api.
